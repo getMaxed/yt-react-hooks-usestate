@@ -1,61 +1,73 @@
 import React, { useState } from 'react';
 
 const App = () => {
-    const [todoList, setTodoList] = useState([]);
-    const handleAddTodo = todo => setTodoList([...todoList, todo]);
-    const handleDeleteTodo = todoToDelete => {
-        const updatedTodoList = todoList.filter(
-            (_, todo) => todo !== todoToDelete
-        );
-        setTodoList(updatedTodoList);
-    };
+  const [todoList, setTodoList] = useState([]);
+  const handleAddTodo = todo => setTodoList([...todoList, todo]);
+  const handleDeleteTodo = todoToDelete => {
+    const updatedTodoList = todoList.filter((_, todo) => todo !== todoToDelete);
+    setTodoList(updatedTodoList);
+  };
 
-    return (
+  return (
+    <>
+      <TodoForm addTodo={handleAddTodo} />
+      {todoList.length !== 0 && (
         <>
-            <TodoForm addTodo={handleAddTodo} />
-            {todoList.length !== 0 && (
-                <>
-                    <h2>TodoList</h2>
-                    <ul>
-                        {todoList.map((todo, index) => (
-                            <Todo
-                                key={Math.random()}
-                                todo={todo}
-                                index={index}
-                                deleteTodo={handleDeleteTodo}
-                            />
-                        ))}
-                    </ul>
-                </>
-            )}
+          <h2>Todo List</h2>
+          <ul>
+            {todoList.map((todo, index) => (
+              <Todo
+                key={Math.random()}
+                todo={todo}
+                index={index}
+                deleteTodo={handleDeleteTodo}
+              />
+            ))}
+          </ul>
         </>
-    );
+      )}
+    </>
+  );
 };
+
+/*
+|--------------------------------------------------------------------------
+| TODO FORM
+|--------------------------------------------------------------------------
+*/
 
 const TodoForm = ({ addTodo }) => {
-    const [inputValue, setInputValue] = useState('');
-    const onFormSubmit = e => {
-        e.preventDefault();
-        if (!inputValue) return alert('write something');
+  const [inputValue, setInputValue] = useState('');
+  const handleFormSubmit = e => {
+    e.preventDefault();
 
-        addTodo(inputValue);
-        setInputValue('');
-    };
+    if (!inputValue) return alert('write something');
+    addTodo(inputValue);
+    setInputValue('');
+  };
 
-    return (
-        <form onSubmit={onFormSubmit}>
-            <input
-                type="text"
-                value={inputValue}
-                onChange={e => setInputValue(e.target.value)}
-            />
-            <input type="submit" value="Add Todo" />
-        </form>
-    );
+  return (
+    <>
+      <form onSubmit={handleFormSubmit}>
+        <input
+          type="text"
+          onChange={e => setInputValue(e.target.value)}
+          value={inputValue}
+        />
+        <input type="submit" value="Add Todo" />
+      </form>
+    </>
+  );
 };
 
-const Todo = ({ todo, index, deleteTodo }) => (
-    <li onClick={() => deleteTodo(index)}>{todo}</li>
+/*
+|--------------------------------------------------------------------------
+| TODO
+|--------------------------------------------------------------------------
+*/
+
+const Todo = ({ todo, deleteTodo, index }) => (
+  <li onClick={() => deleteTodo(index)}>{todo}</li>
 );
 
 export default App;
